@@ -63,7 +63,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ batteryBanks }) => {
   return (
     <MapContainer
       center={[39.8283, -98.5795]} // Geographic center of US
-      zoom={4}
+      zoom={3}
       style={{ height: '320px', width: '100%' }}
       className="rounded-lg"
     >
