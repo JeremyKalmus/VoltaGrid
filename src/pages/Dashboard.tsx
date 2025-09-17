@@ -5,12 +5,12 @@ import {
   Zap, 
   RotateCcw, 
   Calendar,
-  MapPin,
   AlertTriangle,
   TrendingUp,
   ChevronRight
 } from 'lucide-react';
 import KPICard from '../components/KPICard';
+import InteractiveMap from '../components/InteractiveMap';
 import { 
   batteryBanks, 
   fleetKPIs, 
@@ -114,91 +114,10 @@ const Dashboard: React.FC = () => {
             National Energy Storage Network
           </h3>
           
-          {/* Interactive Map Container */}
-          <div className="h-80 bg-gradient-to-br from-blue-50 via-teal-50 to-emerald-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 rounded-lg relative overflow-hidden border border-gray-200 dark:border-gray-600 shadow-inner">
-            {/* US Map Background with Geographic Features */}
-            <div className="absolute inset-0">
-              {/* Simulated US Geographic Regions */}
-              {/* West Coast */}
-              <div className="absolute top-8 left-4 w-16 h-48 bg-emerald-200/40 dark:bg-emerald-800/30 rounded-r-3xl"></div>
-              {/* Texas */}
-              <div className="absolute bottom-12 left-24 w-20 h-16 bg-amber-200/40 dark:bg-amber-800/30 rounded-lg"></div>
-              {/* Great Plains */}
-              <div className="absolute top-16 left-32 w-24 h-32 bg-green-200/40 dark:bg-green-800/30 rounded-lg"></div>
-              {/* East Coast */}
-              <div className="absolute top-4 right-4 w-12 h-56 bg-blue-200/40 dark:bg-blue-800/30 rounded-l-2xl"></div>
-              {/* Great Lakes */}
-              <div className="absolute top-8 left-48 w-16 h-12 bg-cyan-300/50 dark:bg-cyan-700/40 rounded-full"></div>
-              {/* Rocky Mountains */}
-              <div className="absolute top-12 left-20 w-8 h-40 bg-gray-300/50 dark:bg-gray-600/40 rounded-full transform rotate-12"></div>
-              
-              {/* Power Grid Lines */}
-              <div className="absolute inset-0 opacity-20">
-                {/* Major transmission lines */}
-                <div className="absolute top-1/3 left-0 right-0 h-0.5 bg-teal-400 dark:bg-teal-500"></div>
-                <div className="absolute top-2/3 left-0 right-0 h-0.5 bg-teal-400 dark:bg-teal-500"></div>
-                <div className="absolute left-1/4 top-0 bottom-0 w-0.5 bg-teal-400 dark:bg-teal-500"></div>
-                <div className="absolute left-3/4 top-0 bottom-0 w-0.5 bg-teal-400 dark:bg-teal-500"></div>
-                {/* Interconnection lines */}
-                <div className="absolute top-1/4 left-1/4 w-1/2 h-0.5 bg-blue-400 dark:bg-blue-500 transform rotate-45 origin-left"></div>
-                <div className="absolute bottom-1/4 left-1/4 w-1/2 h-0.5 bg-blue-400 dark:bg-blue-500 transform -rotate-45 origin-left"></div>
-              </div>
-            </div>
-            
-            {/* Battery Storage Facility Markers */}
-            {batteryBanks.map((bank, index) => (
-              <Link
-                key={bank.id}
-                to={`/asset/${bank.id}`}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-all duration-300 group z-20"
-                style={{
-                  // Realistic US geographic positioning
-                  left: index === 0 ? '30%' : index === 1 ? '12%' : index === 2 ? '18%' : index === 3 ? '42%' : '78%',
-                  top: index === 0 ? '68%' : index === 1 ? '72%' : index === 2 ? '22%' : index === 3 ? '58%' : '42%'
-                }}
-              >
-                <div className="relative">
-                  {/* Facility Marker with Status Glow */}
-                  <div className={clsx(
-                    'relative p-3 rounded-full shadow-xl border-3 border-white dark:border-gray-800 transition-all duration-300',
-                    bank.status === 'healthy' && 'bg-emerald-500 shadow-emerald-500/60 hover:shadow-emerald-500/80',
-                    bank.status === 'warning' && 'bg-amber-500 shadow-amber-500/60 hover:shadow-amber-500/80',
-                    bank.status === 'critical' && 'bg-red-500 shadow-red-500/60 hover:shadow-red-500/80'
-                  )}>
-                    <MapPin className="h-6 w-6 text-white drop-shadow-sm" />
-                    {/* Active System Pulse */}
-                    <div className={clsx(
-                      'absolute -top-1 -right-1 w-4 h-4 rounded-full animate-pulse border border-white',
-                      bank.status === 'healthy' && 'bg-emerald-400',
-                      bank.status === 'warning' && 'bg-amber-400',
-                      bank.status === 'critical' && 'bg-red-400'
-                    )}></div>
-                  </div>
-                  
-                  {/* Detailed Facility Tooltip */}
-                  <div className="absolute top-14 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 pointer-events-none">
-                    <div className="bg-gray-900/95 dark:bg-gray-100/95 backdrop-blur-sm text-white dark:text-gray-900 text-xs px-4 py-3 rounded-lg shadow-2xl whitespace-nowrap border border-gray-700 dark:border-gray-300">
-                      <div className="font-semibold">{bank.name}</div>
-                      <div className="text-gray-300 dark:text-gray-600 text-xs">{bank.location}</div>
-                      <div className="flex items-center mt-1">
-                        <div className={clsx(
-                          'w-2 h-2 rounded-full mr-2',
-                          bank.status === 'healthy' && 'bg-emerald-400',
-                          bank.status === 'warning' && 'bg-amber-400',
-                          bank.status === 'critical' && 'bg-red-400'
-                        )}></div>
-                        <span className="capitalize text-xs">{bank.status} • {bank.soh}% SoH • {(bank.usableCapacity/1000).toFixed(1)}MW</span>
-                      </div>
-                      {/* Tooltip arrow */}
-                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 dark:bg-gray-100 rotate-45"></div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {/* Real Interactive Map */}
+          <InteractiveMap batteryBanks={batteryBanks} />
           
-          {/* Map Legend - Moved Outside */}
+          {/* Map Legend */}
           <div className="mt-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Facility Status Legend</h4>
             <div className="grid grid-cols-3 gap-4">
